@@ -1,0 +1,22 @@
+{
+  "name": "timespan-js",
+  "version": "1.0.0",
+  "description": "A javascript/typescript port of dotnet's timespan class",
+  "main": "src/index.ts",
+  "scripts": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ssyrell/timespan-js.git"
+  },
+  "keywords": [
+    "timespan"
+  ],
+  "author": "Steve Syrell",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ssyrell/timespan-js/issues"
+  },
+  "homepage": "https://github.com/ssyrell/timespan-js#readme"
+}
