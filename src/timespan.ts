@@ -63,7 +63,7 @@ export class TimeSpan {
      * Returns a TimeSpan that represents a specified number of seconds, where the specification is accurate
      * to the nearest millisecond.
      * @param seconds A number of seconds, accurate to the nearest millisecond.
-     * @returns An object that represents `seconds``.
+     * @returns An object that represents `seconds`.
      * @throws {RangeError} if the calculated millisecond value from `seconds` is greater than `Number.MAX_SAFE_INTEGER` or less than `Number.MIN_SAFE_INTEGER`.
      */
     public static fromSeconds(seconds: number) {
@@ -74,7 +74,7 @@ export class TimeSpan {
      * Returns a TimeSpan that represents a specified number of minutes, where the specification is accurate
      * to the nearest millisecond.
      * @param minutes A number of minutes, accurate to the nearest millisecond.
-     * @returns An object that represents `minutes``.
+     * @returns An object that represents `minutes`.
      * @throws {RangeError} if the calculated millisecond value from `minutes` is greater than `Number.MAX_SAFE_INTEGER` or less than `Number.MIN_SAFE_INTEGER`.
      */
     public static fromMinutes(minutes: number) {
@@ -85,7 +85,7 @@ export class TimeSpan {
      * Returns a TimeSpan that represents a specified number of hours, where the specification is accurate
      * to the nearest millisecond.
      * @param hours A number of hours, accurate to the nearest millisecond.
-     * @returns An object that represents `hours``.
+     * @returns An object that represents `hours`.
      * @throws {RangeError} if the calculated millisecond value from `hours` is greater than `Number.MAX_SAFE_INTEGER` or less than `Number.MIN_SAFE_INTEGER`.
      */
     public static fromHours(hours: number) {
@@ -96,7 +96,7 @@ export class TimeSpan {
      * Returns a TimeSpan that represents a specified number of days, where the specification is accurate
      * to the nearest millisecond.
      * @param days A number of days, accurate to the nearest millisecond.
-     * @returns An object that represents `days``.
+     * @returns An object that represents `days`.
      * @throws {RangeError} if the calculated millisecond value from `days` is greater than `Number.MAX_SAFE_INTEGER` or less than `Number.MIN_SAFE_INTEGER`.
      */
     public static fromDays(days: number) {
@@ -106,7 +106,7 @@ export class TimeSpan {
     /**
     * 
     * @param hours A number of hours, accurate to the nearest millisecond.
-    * @returns An object that represents `hours``.
+    * @returns An object that represents `hours`.
     * @throws {RangeError} if the calculated millisecond value from `hours` is greater than `Number.MAX_SAFE_INTEGER` or less than `Number.MIN_SAFE_INTEGER`.
     */
     /**
@@ -117,7 +117,7 @@ export class TimeSpan {
      * @param seconds Number of seconds.
      * @param milliseconds Number of milliseconds.
      * @returns An object that represents the specified values.
-     * @throws @throws {RangeError} if the calculated total milliseconds is greater than `Number.MAX_SAFE_INTEGER` or less than `Number.MIN_SAFE_INTEGER`.
+     * @throws {RangeError} if the calculated total milliseconds is greater than `Number.MAX_SAFE_INTEGER` or less than `Number.MIN_SAFE_INTEGER`.
      */
     public static fromTime(days?: number, hours?: number, minutes?: number, seconds?: number, milliseconds?: number) {
         const daysMilliseconds = (days ?? 0) * TimeSpan.MillisecondsPerDay;
@@ -200,10 +200,16 @@ export class TimeSpan {
     }
 
     /**
-     * Compares two TimeSpan instances.
-     * @param t1 The first TimeSpan instance.
-     * @param t2 The second TimeSpan instance.
-     * @returns 
+     * Compares two TimeSpan instances and returns an integer that indicates whether
+     * the first value is shorter than, equal to, or longer than the second value.
+     * @param t1 The first time interval to compare.
+     * @param t2 The second time interval to compare.
+     * @returns One of the following values:
+     * | Value | Description               |
+     * |:------|:--------------------------|
+     * | -1    | `t1` is shorter than `t2` |
+     * | 0     | `t1` is equal to `t2`     |
+     * | 1     | `t1` is longer than `t2`  |
      */
     public compare(t1: TimeSpan, t2: TimeSpan): number {
         if (t1.valueOf < t2.valueOf) {
@@ -216,8 +222,6 @@ export class TimeSpan {
 
         // t1 must be greater than t2
         return 1;
-
-        this.compareTo
     }
 
     /**
@@ -260,7 +264,7 @@ export class TimeSpan {
      * specified TimeSpan object and this instance.
      * @param ts The time interval to be subtracted.
      * @returns A new object that represents the value of this instance minus the value of `ts`
-     * * @throws {RangeError} if the resulting TimeSpan is less than TimeSpan.MinValue or greater than TimeSpan.MaxValue.
+     * @throws {RangeError} if the resulting TimeSpan is less than TimeSpan.MinValue or greater than TimeSpan.MaxValue.
      */
     public subtract(ts: TimeSpan): TimeSpan {
         return new TimeSpan(this.valueOf() - ts.valueOf());
@@ -271,7 +275,7 @@ export class TimeSpan {
      * specified TimeSpan object and this instance.
      * @param ts The time interval to be multiplied by.
      * @returns A new object that represents the value of this instance multiplied by the value of `ts`
-     * * @throws {RangeError} if the resulting TimeSpan is less than TimeSpan.MinValue or greater than TimeSpan.MaxValue.
+     * @throws {RangeError} if the resulting TimeSpan is less than TimeSpan.MinValue or greater than TimeSpan.MaxValue.
      */
     public multiply(ts: TimeSpan): TimeSpan {
         return new TimeSpan(this.valueOf() * ts.valueOf());
@@ -282,7 +286,7 @@ export class TimeSpan {
      * specified TimeSpan object and this instance.
      * @param ts The time interval to be divided by.
      * @returns A new object that represents the value of this instance divided by the value of `ts`
-     * * @throws {RangeError} if the resulting TimeSpan is less than TimeSpan.MinValue or greater than TimeSpan.MaxValue.
+     * @throws {RangeError} if the resulting TimeSpan is less than TimeSpan.MinValue or greater than TimeSpan.MaxValue.
      */
     public divide(ts: TimeSpan): TimeSpan {
         return new TimeSpan(this.valueOf() / ts.valueOf());
@@ -316,6 +320,14 @@ export class TimeSpan {
             this.numberToPaddedString(this.milliseconds, 3);
     }
 
+    /**
+     * Converts the specified numeric value to a string, prepends it with the
+     * desired number of zeros, and appends the desired character to the end.
+     * @param value The number value to stringify.
+     * @param places The number of places to display in the string.
+     * @param endingCharacter The character to append to the end of the value.
+     * @returns The formatted number string or an empty string if `value` is 0.
+     */
     private numberToPaddedString(value: number, places: number, endingCharacter?: string): string {
         if (value === 0) {
             return "";
