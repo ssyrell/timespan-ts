@@ -1,22 +1,37 @@
 {
-  "name": "timespan-js",
+  "name": "timespan-ts",
   "version": "1.0.0",
-  "description": "A javascript/typescript port of dotnet's timespan class",
-  "main": "src/index.ts",
+  "description": "A TypeScript version of DotNet's TimeSpan class",
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "files": [
+    "lib"
+  ],
   "scripts": {
-    "test": "test"
+    "test": "test",
+    "build": "tsc",
+    "prepublish": "tsc"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ssyrell/timespan-js.git"
+    "url": "git+https://github.com/ssyrell/timespan-ts.git"
   },
   "keywords": [
-    "timespan"
+    "timespan",
+    "timespan-ts",
+    "timespan.ts",
+    "timespan-js",
+    "timespan.js",
+    "typescript",
+    "typescript timespan"
   ],
   "author": "Steve Syrell",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/ssyrell/timespan-js/issues"
+    "url": "https://github.com/ssyrell/timespan-ts/issues"
   },
-  "homepage": "https://github.com/ssyrell/timespan-js#readme"
+  "homepage": "https://github.com/ssyrell/timespan-ts#readme",
+  "dependencies": {
+    "typescript": "^4.9.4"
+  }
 }
