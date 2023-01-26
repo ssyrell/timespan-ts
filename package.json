@@ -1,7 +1,7 @@
 {
   "name": "timespan-ts",
-  "version": "0.0.2",
-  "description": "A TypeScript version of DotNet's TimeSpan class",
+  "version": "1.0.0",
+  "description": "A TypeScript version of dotnet's TimeSpan class",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
   "files": [

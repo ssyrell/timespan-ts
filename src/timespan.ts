@@ -55,7 +55,7 @@ export class TimeSpan {
      * @returns An object that represents `milliseconds`.
      * @throws {RangeError} if `milliseconds` is greater than `Number.MAX_SAFE_INTEGER` or less than `Number.MIN_SAFE_INTEGER`.
      */
-    public static fromMilliseconds(milliseconds: number) {
+    public static fromMilliseconds(milliseconds: number): TimeSpan {
         return this.fromTime(undefined, undefined, undefined, undefined, milliseconds);
     }
 
@@ -66,7 +66,7 @@ export class TimeSpan {
      * @returns An object that represents `seconds`.
      * @throws {RangeError} if the calculated millisecond value from `seconds` is greater than `Number.MAX_SAFE_INTEGER` or less than `Number.MIN_SAFE_INTEGER`.
      */
-    public static fromSeconds(seconds: number) {
+    public static fromSeconds(seconds: number): TimeSpan {
         return this.fromTime(undefined, undefined, undefined, seconds);
     }
 
@@ -77,7 +77,7 @@ export class TimeSpan {
      * @returns An object that represents `minutes`.
      * @throws {RangeError} if the calculated millisecond value from `minutes` is greater than `Number.MAX_SAFE_INTEGER` or less than `Number.MIN_SAFE_INTEGER`.
      */
-    public static fromMinutes(minutes: number) {
+    public static fromMinutes(minutes: number): TimeSpan {
         return this.fromTime(undefined, undefined, minutes);
     }
 
@@ -88,7 +88,7 @@ export class TimeSpan {
      * @returns An object that represents `hours`.
      * @throws {RangeError} if the calculated millisecond value from `hours` is greater than `Number.MAX_SAFE_INTEGER` or less than `Number.MIN_SAFE_INTEGER`.
      */
-    public static fromHours(hours: number) {
+    public static fromHours(hours: number): TimeSpan {
         return this.fromTime(undefined, hours);
     }
 
@@ -99,16 +99,10 @@ export class TimeSpan {
      * @returns An object that represents `days`.
      * @throws {RangeError} if the calculated millisecond value from `days` is greater than `Number.MAX_SAFE_INTEGER` or less than `Number.MIN_SAFE_INTEGER`.
      */
-    public static fromDays(days: number) {
+    public static fromDays(days: number): TimeSpan {
         return this.fromTime(days);
     }
 
-    /**
-    * 
-    * @param hours A number of hours, accurate to the nearest millisecond.
-    * @returns An object that represents `hours`.
-    * @throws {RangeError} if the calculated millisecond value from `hours` is greater than `Number.MAX_SAFE_INTEGER` or less than `Number.MIN_SAFE_INTEGER`.
-    */
     /**
      * Returns a TimeSpan that represents a specified number of days, hours, minutes, seconds, and milliseconds.
      * @param days Number of days.
@@ -119,13 +113,26 @@ export class TimeSpan {
      * @returns An object that represents the specified values.
      * @throws {RangeError} if the calculated total milliseconds is greater than `Number.MAX_SAFE_INTEGER` or less than `Number.MIN_SAFE_INTEGER`.
      */
-    public static fromTime(days?: number, hours?: number, minutes?: number, seconds?: number, milliseconds?: number) {
+    public static fromTime(days?: number, hours?: number, minutes?: number, seconds?: number, milliseconds?: number): TimeSpan {
         const daysMilliseconds = (days ?? 0) * TimeSpan.MillisecondsPerDay;
         const hourMilliseconds = (hours ?? 0) * TimeSpan.MillisecondsPerHour;
         const minuteMilliseconds = (minutes ?? 0) * TimeSpan.MillisecondsPerMinute;
         const secondMilliseconds = (seconds ?? 0) * TimeSpan.MillisecondsPerSecond;
 
         return new TimeSpan(daysMilliseconds + hourMilliseconds + minuteMilliseconds + secondMilliseconds + (milliseconds ?? 0));
+    }
+
+    /**
+     * Returns a TimeSpan representing the difference in time between two dates.
+     * To calculate the time difference, `date2` is subtracted from `date1` and will
+     * result in a negative TimeSpan value if `date2` occurs after `date1`.
+     * @param date1 The first date value.
+     * @param date2 The second date value.
+     * @returns An object that represents the difference between the two dates.
+     * @throws {RangeError} if the calculated total milliseconds is greater than `Number.MAX_SAFE_INTEGER` or less than `Number.MIN_SAFE_INTEGER`.
+     */
+    public static fromDateDiff(date1: Date, date2: Date): TimeSpan {
+        return new TimeSpan(date1.valueOf() - date2.valueOf());
     }
 
     /**
@@ -211,7 +218,7 @@ export class TimeSpan {
      * | 0     | `t1` is equal to `t2`     |
      * | 1     | `t1` is longer than `t2`  |
      */
-    public compare(t1: TimeSpan, t2: TimeSpan): number {
+    public static compare(t1: TimeSpan, t2: TimeSpan): number {
         if (t1.valueOf < t2.valueOf) {
             return -1;
         }
@@ -237,7 +244,7 @@ export class TimeSpan {
      * | A positive integer  | This instance is longer than `value`  |
      */
     public compareTo(value: TimeSpan): number {
-        return this.compare(this, value);
+        return TimeSpan.compare(this, value);
     }
 
     /**
