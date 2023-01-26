@@ -1,6 +1,6 @@
 {
   "name": "timespan-ts",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A TypeScript version of dotnet's TimeSpan class",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
@@ -31,7 +31,7 @@
     "url": "https://github.com/ssyrell/timespan-ts/issues"
   },
   "homepage": "https://github.com/ssyrell/timespan-ts#readme",
-  "dependencies": {
+  "devDependencies": {
     "typescript": "^4.9.4"
   }
 }

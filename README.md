@@ -35,7 +35,7 @@ TimeSpan.fromTime(days, hours, minutes, seconds, milliseconds);
 
 All parameters in `fromTime()` are optional, so you can pick and choose accordingly:
 ```typescript
-// Creates a TimeSpan instance of 3 minutes, 50 seconds, and 2 milliseconds:
+// Creates a TimeSpan instance of 3 days, 50 hours, and 2 minutes:
 TimeSpan.fromTime(3, 50, 2);
 ```
 
@@ -53,7 +53,7 @@ TimeSpan.fromDateDiff(date1, date2);
 TimeSpan.fromDateDiff(date2, date1)
 ```
 
-## Min/Max/Zero And Other Constant Values
+## Min/Max/Zero and Other Constant Values
 
 TimeSpan calculates and stores the total span of time in milliseconds and will throw `RangeError` if any method call results in the total number of milliseconds being larger than `Number.MAX_SAFE_INTEGER` or smaller than `Number.MIN_SAFE_INTEGER`. 
 
