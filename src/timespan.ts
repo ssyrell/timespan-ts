@@ -47,6 +47,9 @@ export class TimeSpan {
         if (valueInMilliseconds > Number.MAX_SAFE_INTEGER || valueInMilliseconds < Number.MIN_SAFE_INTEGER) {
             throw new RangeError("TimeSpan is too long");
         }
+
+        // Don't allow -0 values
+        valueInMilliseconds = valueInMilliseconds === -0 ? 0 : valueInMilliseconds;
     }
 
     /**
@@ -124,15 +127,15 @@ export class TimeSpan {
 
     /**
      * Returns a TimeSpan representing the difference in time between two dates.
-     * To calculate the time difference, `date2` is subtracted from `date1` and will
-     * result in a negative TimeSpan value if `date2` occurs after `date1`.
-     * @param date1 The first date value.
-     * @param date2 The second date value.
+     * To calculate the time difference, `start` is subtracted from `end` and will
+     * result in a negative TimeSpan value if `start` occurs after `end`.
+     * @param start The starting date value.
+     * @param end The ending date value.
      * @returns An object that represents the difference between the two dates.
      * @throws {RangeError} if the calculated total milliseconds is greater than `Number.MAX_SAFE_INTEGER` or less than `Number.MIN_SAFE_INTEGER`.
      */
-    public static fromDateDiff(date1: Date, date2: Date): TimeSpan {
-        return new TimeSpan(date1.valueOf() - date2.valueOf());
+    public static fromDateDiff(start: Date, end: Date): TimeSpan {
+        return new TimeSpan(end.valueOf() - start.valueOf());
     }
 
     /**
@@ -175,35 +178,40 @@ export class TimeSpan {
      * Gets the milliseconds component of the time interval represented by this TimeSpan.
      */
     public get milliseconds(): number {
-        return Math.trunc(this.totalMilliseconds % 1000);
+        const value = Math.trunc(this.totalMilliseconds % 1000);
+        return value === -0 ? 0 : value;
     }
 
     /**
      * Gets the seconds component of the time interval represented by this TimeSpan.
      */
     public get seconds(): number {
-        return Math.trunc(this.totalSeconds % 60);
+        const value = Math.trunc(this.totalSeconds % 60);
+        return value === -0 ? 0 : value;
     }
 
     /**
      * Gets the minutes component of the time interval represented by this TimeSpan.
      */
     public get minutes(): number {
-        return Math.trunc(this.totalMinutes % 60);
+        const value = Math.trunc(this.totalMinutes % 60);
+        return value === -0 ? 0 : value;
     }
 
     /**
      * Gets the hours component of the time interval represented by this TimeSpan.
      */
     public get hours(): number {
-        return Math.trunc(this.totalHours % 24);
+        const value = Math.trunc(this.totalHours % 24);
+        return value === -0 ? 0 : value;
     }
 
     /**
      * Gets the days component of the time interval represented by this TimeSpan.
      */
     public get days(): number {
-        return Math.trunc(this.totalDays);
+        const value = Math.trunc(this.totalDays);
+        return value === -0 ? 0 : value;
     }
 
     /**
@@ -219,11 +227,11 @@ export class TimeSpan {
      * | 1     | `t1` is longer than `t2`  |
      */
     public static compare(t1: TimeSpan, t2: TimeSpan): number {
-        if (t1.valueOf < t2.valueOf) {
+        if (t1.valueOf() < t2.valueOf()) {
             return -1;
         }
 
-        if (t1.valueOf === t2.valueOf) {
+        if (t1.valueOf() === t2.valueOf()) {
             return 0;
         }
 
@@ -278,25 +286,25 @@ export class TimeSpan {
     }
 
     /**
-     * Returns a new TimeSpan instance whose value is the result of multiplication between the
-     * specified TimeSpan object and this instance.
-     * @param ts The time interval to be multiplied by.
-     * @returns A new object that represents the value of this instance multiplied by the value of `ts`
+     * Returns a new TimeSpan instance whose value is the result of multiplication of this
+     * instance and the specified `factor`.
+     * @param factor The value be multiplied by.
+     * @returns A new object that represents the value of this instance multiplied by the value of `factor`
      * @throws {RangeError} if the resulting TimeSpan is less than TimeSpan.MinValue or greater than TimeSpan.MaxValue.
      */
-    public multiply(ts: TimeSpan): TimeSpan {
-        return new TimeSpan(this.valueOf() * ts.valueOf());
+    public multiply(factor: number): TimeSpan {
+        return new TimeSpan(this.valueOf() * factor);
     }
 
     /**
-     * Returns a new TimeSpan instance whose value is the result of division of the
-     * specified TimeSpan object and this instance.
-     * @param ts The time interval to be divided by.
-     * @returns A new object that represents the value of this instance divided by the value of `ts`
+     * Returns a new TimeSpan instance whose value is the result of division of this
+     * instance and the specified `divisor`.
+     * @param divisor The value to be divided by.
+     * @returns A new object that represents the value of this instance divided by the value of `divisor`
      * @throws {RangeError} if the resulting TimeSpan is less than TimeSpan.MinValue or greater than TimeSpan.MaxValue.
      */
-    public divide(ts: TimeSpan): TimeSpan {
-        return new TimeSpan(this.valueOf() / ts.valueOf());
+    public divide(divisor: number): TimeSpan {
+        return new TimeSpan(this.valueOf() / divisor);
     }
 
     /**
@@ -320,11 +328,12 @@ export class TimeSpan {
      * @returns The string representation of this TimeSpan value.
      */
     public toString(): string {
-        return this.numberToPaddedString(this.days, 2, ":") +
-            this.numberToPaddedString(this.hours, 2, ":") +
-            this.numberToPaddedString(this.minutes, 2, ":") +
-            this.numberToPaddedString(this.seconds, 2, ".") +
-            this.numberToPaddedString(this.milliseconds, 3);
+        return (this.valueOf() < 0 ? "-" : "") +
+            this.numberToPaddedString(this.days, 2, false, ":") +
+            this.numberToPaddedString(this.hours, 2, this.days !== 0, ":") +
+            this.numberToPaddedString(this.minutes, 2, this.days !== 0 || this.hours !== 0, ":") +
+            this.numberToPaddedString(this.seconds, 2, this.days !== 0 || this.hours !== 0 || this.minutes !== 0, ".") +
+            this.numberToPaddedString(this.milliseconds, 3, true);
     }
 
     /**
@@ -335,25 +344,28 @@ export class TimeSpan {
      * @param endingCharacter The character to append to the end of the value.
      * @returns The formatted number string or an empty string if `value` is 0.
      */
-    private numberToPaddedString(value: number, places: number, endingCharacter?: string): string {
+    private numberToPaddedString(value: number, places: number, renderIfEmpty: boolean, endingCharacter?: string): string {
+        let output = "";
         if (value === 0) {
-            return "";
+            if (renderIfEmpty) {
+                for (var i = 0; i < places; i++) {
+                    output += "0";
+                }
+
+                output += endingCharacter ?? "";
+            }
+
+            return output;
         }
 
         let minFullPlacesValue = Math.pow(10, places - 1);
-        let output = "";
 
-        while (value < minFullPlacesValue && output.length < places - 1) {
+        const absoluteValue = Math.abs(value);
+        while (absoluteValue < minFullPlacesValue && output.length < places - 1) {
             output += "0";
             minFullPlacesValue /= 10;
         }
 
-        output += value;
-
-        if (output.length > 0) {
-            output += endingCharacter ?? "";
-        }
-
-        return output;
+        return `${output}${absoluteValue}${endingCharacter ?? ""}`;
     }
 }
