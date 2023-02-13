@@ -41,16 +41,16 @@ TimeSpan.fromTime(3, 50, 2);
 
 Lastly, a TimeSpan can also be created using the difference between two dates using the `TimeSpan.fromDateDiff()` convenience method.
 
-**Warning** - you will end up with a negative value this way if the second date occurs after the first date.
+**Warning** - you will end up with a negative value this way if the start date occurs after the end date.
 ```typescript
-const date1 = Date.parse('05 Dec 1995 00:00:00 GMT');
-const date2 = Date.parse('04 Dec 1995 00:00:00 GMT');
+const start = Date.parse('04 Dec 1995 00:00:00 GMT');
+const end = Date.parse('05 Dec 1995 00:00:00 GMT');
 
 // Results in a TimeSpan of 1 day:
-TimeSpan.fromDateDiff(date1, date2);
+TimeSpan.fromDateDiff(start, end);
 
 // Results in a TimeSpan of -1 day:
-TimeSpan.fromDateDiff(date2, date1)
+TimeSpan.fromDateDiff(end, start);
 ```
 
 ## Min/Max/Zero and Other Constant Values
@@ -102,10 +102,14 @@ const oneHour = TimeSpan.FromHours(1);
 const twoHours = TimeSpan.FromHours(2);
 
 // Using static compare:
-const result = TimeSpan.compare(oneHour, twoHours); // -1
+const result = TimeSpan.compare(oneHour, twoHours);     // -1
+const result2 = TimeSpan.compare(twoHours, oneHour);    // 1
+const result3 = TimeSpan.compare(oneHour, oneHour);     // 0
 
 // Using instance compareTo:
-const result2 = oneHour.compareTo(twoHours); // -1
+const result4 = oneHour.compareTo(twoHours); // -1
+const result5 = twoHours.compareTo(oneHour); // 1
+const result6 = oneHour.compareTo(oneHour); // 0
 ```
 
 ## Math Operations
@@ -118,8 +122,9 @@ const threeHours = TimeSpan.FromHours(3);
 
 const fiveHours = twoHours.add(threeHours); 
 const oneHour = threeHours.subtract(twoHours);
-const fourHours = twoHours.multiply(twoHours);
-const newTwoHours = fourHours.divide(twoHours); 
+
+const fourHours = twoHours.multiply(2);
+const newTwoHours = fourHours.divide(2); 
 
 const negativeOneHour = twoHours.subtract(threeHours);
 const absoluteValue = negativeHour.duration();
@@ -128,13 +133,19 @@ const negativeTwoHours = twoHours.negate();
 
 ## Printing
 
-Lastly, TimeSpans can be printed in human readable form using `toString()`. Most-significant time components that are zero in value are not included in the output:
+Lastly, TimeSpans can be printed in human readable form using `toString()`. Most-significant (or least-significant if the TimeSpan is negative) time components that are zero in value are not included in the output:
 ```typescript
 const ts = TimeSpan.fromTime(1, 12, 25, 3, 400);
 const ts2 = TimeSpan.fromTime(0, 12, 25, 3, 400);
+const ts3 = TimeSpan.fromTime(0, 12, 0, 3, 400);
+const ts4 = TimeSpan.fromTime(-1, -12, -25, -3, -400);
+const ts4 = TimeSpan.fromTime(, -12, -25, -3, -400);
 
 console.log(ts.toString());     // "01:12:25:03.400" 
 console.log(ts2.toString());    // "12:25:03.400" 
+console.log(ts3.toString());    // "12:00:03.400"
+console.log(ts4.toString());    // "-01:12:25:03.400"
+console.log(ts5.toString());    // "-12:25:03.400"
 ```
 
 
