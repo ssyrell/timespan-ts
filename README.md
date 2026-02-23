@@ -77,7 +77,7 @@ TimeSpan.MillisecondsPerDay;
 A TimeSpan instance has methods that allow you to get either the total amount of a given time unit (using the `total*` properties) or get a unit's component value (using the time unit properties). For example:
 
 ```typescript
-// Creates a TimeSpan of 1 hour and 5 minutes
+// Creates a TimeSpan of 1 hour and 15 minutes
 const ts = TimeSpan.fromTime(0, 1, 15);
 
 console.log(ts.totalDays)           // 0.052083333333333336
